@@ -1,0 +1,23 @@
+services:
+  prometheus:
+    image: prom/prometheus  # Use the official Prometheus image
+    container_name: prometheus  # Name the container for easier management
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'  # Explicitly specifies the configuration file path for Prometheus. 
+      # Ensures it uses the correct custom configuration file mounted at /etc/prometheus/prometheus.yml inside the container.
+
+      # The --config.file flag is a Prometheus-specific argument. It tells the Prometheus binary running inside the container where to find its configuration file (prometheus.yml).
+      # This flag is part of Prometheus's functionality, not Docker Compose.
+      # Role in docker-compose.yml
+      # When you include the command section in a docker-compose.yml file, you are overriding or appending to the default entrypoint command that runs inside the container.
+      # In this case, the prom/prometheus image expects and supports arguments like --config.file for customizing Prometheus's behavior.
+
+    ports:
+      - 9090:9090  # Expose Prometheus web interface on port 9090
+    restart: unless-stopped  # Automatically restart unless manually stopped
+    volumes: 
+      - ./prometheus:/etc/prometheus  # Bind local directory for Prometheus configuration files
+      - prom_data:/prometheus  # Persist Prometheus data in a Docker-managed volume
+      
+volumes: 
+  prom_data:  # Declare a named volume for Prometheus data
